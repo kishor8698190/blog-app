@@ -6,7 +6,8 @@ from .models import BlogPost
 from .serializers import BlogPostSerializer, CommentSerializer
 
 class CreateBlogPostAPIView(APIView):
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
+
     def post(self, request):
         try:
             data = request.data
