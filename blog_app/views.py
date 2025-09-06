@@ -10,10 +10,7 @@ class CreateBlogPostAPIView(APIView):
 
     def post(self, request):
         try:
-            data = request.data
-            # data['author'] = request.user.id  # Set the author to the logged-in user
-            serializer = BlogPostSerializer(data=data)
-
+            serializer = BlogPostSerializer(data=request.data, context={'request': request})
             if serializer.is_valid():
                 serializer.save()
                 return Response({"status": "success", "message": "Blog has been created.", "data": serializer.data}, status=status.HTTP_201_CREATED)
@@ -46,6 +43,7 @@ class CreateBlogPostAPIView(APIView):
 
 
 class MineBlogPostAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
     '''
     To get only user specific blogs
     '''
@@ -71,12 +69,13 @@ class MineBlogPostAPIView(APIView):
 
 
 class CreateCommentAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def post(self, request, blog_id):
         try:
-            print(request.data)
             data = request.data
             data['post'] = blog_id
-            data['author'] = 1
+            data['author'] = request.user.pk
             serializer = CommentSerializer(data=data)
 
             if serializer.is_valid():
