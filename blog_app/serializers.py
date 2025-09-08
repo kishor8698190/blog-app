@@ -16,6 +16,15 @@ class BlogPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = BlogPost
         fields = ['id', 'author', 'title', 'content', 'image', 'created_at', "comments"]
-        read_only_fields = ['id', 'created_at']
+        read_only_fields = ['id', 'created_at', 'author']
+
+
+    # Optional: set author here instead of in the view
+    def create(self, validated_data):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            validated_data['author'] = request.user
+        return super().create(validated_data)
+
 
 
